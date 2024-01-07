@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float moveForce;
+    public float moveSpeed;
     Rigidbody2D rb;
-    public float maxVelocity = 10f;
     public bool isGrounded;
     public float jumpSpeed = 5;
     public LayerMask groundLayer;
+    public bool isAtLeftWall;
+    public bool isAtRightWall;
 
 
     private void Start()
@@ -20,26 +21,25 @@ public class Player : MonoBehaviour
     void Update()
     {
         isGrounded = IsGrounded();
+        isAtLeftWall = IsAtLeftWall();
+        isAtRightWall = IsAtRightWall();
         var hor = Input.GetAxisRaw("Horizontal");
-        rb.AddForce(new Vector2(hor, 0) * Time.deltaTime * moveForce);
-        LimitVelocity();
-        print(rb.velocity);
+        
+        if (isAtLeftWall || isAtRightWall)
+        {
+            hor = 0f;
+        }
+        else
+        {
+            rb.velocity = new Vector2(hor * moveSpeed, rb.velocity.y);
+        }
+        
+        
+
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            rb.velocity += Vector2.up * jumpSpeed;
-        }
-    }
-
-    
-    void LimitVelocity()
-    {
-        
-        Vector2 currentVelocity = rb.velocity;
-        float currentSpeed = currentVelocity.magnitude;
-        if (currentSpeed > maxVelocity)
-        { 
-            Vector2 newVelocity = currentVelocity.normalized * maxVelocity;
-            rb.velocity = newVelocity;
+            
+            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
         }
     }
 
@@ -47,6 +47,18 @@ public class Player : MonoBehaviour
     {
 
         float raycastDistance = 0.1f;
-        return Physics.Raycast(GetComponent<BoxCollider2D>().bounds.center, Vector2.down, GetComponent<BoxCollider2D>().bounds.extents.y + raycastDistance, groundLayer);
+        return Physics2D.BoxCast(GetComponent<BoxCollider2D>().bounds.center, GetComponent<BoxCollider2D>().bounds.size, 0, Vector2.down, raycastDistance, groundLayer);
+    }
+
+    bool IsAtLeftWall()
+    {
+        float raycastDistance = 0.1f;
+        return Physics2D.BoxCast(GetComponent<BoxCollider2D>().bounds.center, GetComponent<BoxCollider2D>().bounds.size,0, Vector2.left, raycastDistance, groundLayer);
+    }
+
+    bool IsAtRightWall()
+    {
+        float raycastDistance = 0.1f;
+        return Physics2D.BoxCast(GetComponent<BoxCollider2D>().bounds.center, GetComponent<BoxCollider2D>().bounds.size, 0, Vector2.right, raycastDistance, groundLayer);
     }
 }
