@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public LayerMask groundLayer;
     public bool isAtLeftWall;
     public bool isAtRightWall;
+    public Animator animator;
 
 
     private void Start()
@@ -24,22 +25,28 @@ public class Player : MonoBehaviour
         isAtLeftWall = IsAtLeftWall();
         isAtRightWall = IsAtRightWall();
         var hor = Input.GetAxisRaw("Horizontal");
-        
-        if (isAtLeftWall || isAtRightWall)
+        animator.SetFloat("speed", Mathf.Abs(hor));
+        animator.SetBool("jump", isGrounded);
+        if (isAtLeftWall && hor < 0 || isAtRightWall && hor > 0)
         {
             hor = 0f;
         }
-        else
-        {
-            rb.velocity = new Vector2(hor * moveSpeed, rb.velocity.y);
-        }
-        
-        
+
+        rb.velocity = new Vector2(hor * moveSpeed, rb.velocity.y);
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+        }
+
+        if (hor > 0)
+        {
+            transform.localScale = new Vector2(1,1);
+
+        }
+        else if (hor < 0)
+        {
+            transform.localScale = new Vector2(-1, 1);
         }
     }
 
