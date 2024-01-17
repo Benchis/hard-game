@@ -12,11 +12,15 @@ public class Player : MonoBehaviour
     public bool isAtLeftWall;
     public bool isAtRightWall;
     public Animator animator;
+    public GameObject RespawnPoint;
+    public Camera cam;
+    
 
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        
     }
 
     void Update()
@@ -48,6 +52,18 @@ public class Player : MonoBehaviour
         {
             transform.localScale = new Vector2(-1, 1);
         }
+
+        Vector3 viewPos = cam.WorldToViewportPoint(transform.position);
+        if (viewPos.x > 1.0f)
+        {
+            cam.transform.position += new Vector3(17.9f, 0, 0);
+        }
+        else if (viewPos.x < 0.0f)
+        {
+            cam.transform.position -= new Vector3(17.9f, 0, 0);
+        }
+
+
     }
 
     bool IsGrounded()
@@ -68,4 +84,22 @@ public class Player : MonoBehaviour
         float raycastDistance = 0.1f;
         return Physics2D.BoxCast(GetComponent<BoxCollider2D>().bounds.center, GetComponent<BoxCollider2D>().bounds.size, 0, Vector2.right, raycastDistance, groundLayer);
     }
+
+
+    void Death()
+    {
+        transform.position = RespawnPoint.transform.position;
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "owie")
+        {
+            Death();
+            
+        }
+    }
+
+
 }
