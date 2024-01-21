@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - owie
+  - title
+  - button
+  - play
   layers:
   - Default
   - TransparentFX
