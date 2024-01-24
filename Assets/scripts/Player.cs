@@ -13,19 +13,23 @@ public class Player : MonoBehaviour
     public bool isAtLeftWall;
     public bool isAtRightWall;
     public Animator animator;
-    public GameObject RespawnPoint;
     public Camera cam;
     public int hp = 3;
     public GameObject HighHp;
     public GameObject MidHp;
     public GameObject LowHp;
+    public List<GameObject> checkpoint;
+    public int whitchCheckpoint = 0;
+    
+    AudioSource source;
     
 
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        
+        source = GetComponent<AudioSource>();
+
     }
 
     void Update()
@@ -46,6 +50,7 @@ public class Player : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+            source.Play();
         }
 
         if (hor > 0)
@@ -93,7 +98,7 @@ public class Player : MonoBehaviour
 
     void Death()
     {
-        transform.position = RespawnPoint.transform.position;
+        transform.position = checkpoint[whitchCheckpoint].transform.position;
     }
 
 
@@ -121,6 +126,12 @@ public class Player : MonoBehaviour
             {
                 SceneManager.LoadScene("Menu");
             }
+        }
+
+        if (collision.gameObject.tag == "checkpoint")
+        {
+            whitchCheckpoint++;
+            checkpoint[whitchCheckpoint].GetComponent<BoxCollider2D>().enabled = false;
         }
     }
 

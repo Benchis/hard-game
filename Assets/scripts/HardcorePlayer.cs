@@ -15,11 +15,12 @@ public class HardcorePlayer : MonoBehaviour
     public Animator animator;
     public GameObject RespawnPoint;
     public Camera cam;
+    AudioSource source;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
+        source = GetComponent<AudioSource>();
     }
 
 
@@ -41,6 +42,7 @@ public class HardcorePlayer : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+            source.Play();
         }
 
         if (hor > 0)

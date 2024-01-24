@@ -8,6 +8,7 @@ TagManager:
   - title
   - button
   - play
+  - checkpoint
   layers:
   - Default
   - TransparentFX
