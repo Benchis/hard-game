@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Player : MonoBehaviour
+public class HardcorePlayer : MonoBehaviour
 {
     public float moveSpeed;
     Rigidbody2D rb;
@@ -15,18 +15,13 @@ public class Player : MonoBehaviour
     public Animator animator;
     public GameObject RespawnPoint;
     public Camera cam;
-    public int hp = 3;
-    public GameObject HighHp;
-    public GameObject MidHp;
-    public GameObject LowHp;
-    
 
-
-    private void Start()
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        
+
     }
+
 
     void Update()
     {
@@ -50,7 +45,7 @@ public class Player : MonoBehaviour
 
         if (hor > 0)
         {
-            transform.localScale = new Vector2(1,1);
+            transform.localScale = new Vector2(1, 1);
 
         }
         else if (hor < 0)
@@ -67,8 +62,6 @@ public class Player : MonoBehaviour
         {
             cam.transform.position -= new Vector3(17.9f, 0, 0);
         }
-
-
     }
 
     bool IsGrounded()
@@ -81,7 +74,7 @@ public class Player : MonoBehaviour
     bool IsAtLeftWall()
     {
         float raycastDistance = 0.1f;
-        return Physics2D.BoxCast(GetComponent<BoxCollider2D>().bounds.center, GetComponent<BoxCollider2D>().bounds.size,0, Vector2.left, raycastDistance, groundLayer);
+        return Physics2D.BoxCast(GetComponent<BoxCollider2D>().bounds.center, GetComponent<BoxCollider2D>().bounds.size, 0, Vector2.left, raycastDistance, groundLayer);
     }
 
     bool IsAtRightWall()
@@ -102,27 +95,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "owie")
         {
             Death();
-            hp--;
-            if (hp == 2)
-            {
-                HighHp.GetComponent<SpriteRenderer>().enabled = false;
-                MidHp.GetComponent<SpriteRenderer>().enabled = true;
-            }
-            else if (hp == 1)
-            {
-                MidHp.GetComponent<SpriteRenderer>().enabled = false;
-                LowHp.GetComponent<SpriteRenderer>().enabled = true;
-
-            }
-
-
-
-            if (hp < 1)
-            {
-                SceneManager.LoadScene("Menu");
-            }
+            SceneManager.LoadScene("Menu");
         }
     }
-
-
 }
